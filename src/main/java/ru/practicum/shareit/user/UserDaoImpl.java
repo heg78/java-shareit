@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.*;
 
 @Component
-class UserDaoImpl implements UserDao{
+class UserDaoImpl implements UserDao {
 
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> emails = new HashSet<>();
@@ -19,7 +19,7 @@ class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public User getUser(Long userId){
+    public User getUser(Long userId) {
         return users.get(userId);
     }
 
