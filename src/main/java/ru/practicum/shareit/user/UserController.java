@@ -1,12 +1,40 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.dto.UserDto;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(path = "/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
+
+    @GetMapping
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto getUser(@PathVariable long userId) {
+        return UserMapper.toUserDto(userService.getUser(userId));
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable long userId) {
+        userService.deleteUser(userId);
+    }
+
+    @PostMapping
+    public UserDto saveNewUser(@RequestBody UserDto userDto) {
+        return UserMapper.toUserDto(userService.saveUser(UserMapper.toUser(userDto)));
+    }
+
+    @PatchMapping("/{userId}")
+    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
+        return UserMapper.toUserDto(userService.updateUser(userId, UserMapper.toUser(userDto)));
+    }
 }
