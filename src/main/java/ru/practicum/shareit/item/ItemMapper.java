@@ -13,4 +13,13 @@ public class ItemMapper {
                 itemDto.getOwner(),
                 null);
     }
+
+    public static ItemDto toItemDto(Item item) {
+        return new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getOwner());
+    }
 }

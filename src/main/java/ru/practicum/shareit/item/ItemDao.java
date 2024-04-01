@@ -9,9 +9,9 @@ public interface ItemDao {
 
     Item getItem(Long itemId);
 
-    Item saveItem(Long userId, Item item);
+    Item saveItem(Item item);
 
-    Item updateItem(Long userId, Long itemId, Item item);
+    Item updateItem(Item item);
 
     List<Item> searchItem(String text);
 }

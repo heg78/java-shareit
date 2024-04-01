@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -24,10 +25,17 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        if (user.getEmail() == null || !user.getEmail().contains("@")) {
+            throw new ValidationException("Не указан Email или указан некорректно");
+        }
         return userDao.saveUser(user);
     }
 
-    public User updateUser(Long userId, User user) {
-        return userDao.updateUser(userId, user);
+    public User updateUser(Long userId, User newUser) {
+        if (newUser.getEmail() != null && !newUser.getEmail().contains("@")) {
+            throw new ValidationException("Не указан Email или указан некорректно");
+        }
+        newUser.setId(userId);
+        return userDao.updateUser(newUser);
     }
 }

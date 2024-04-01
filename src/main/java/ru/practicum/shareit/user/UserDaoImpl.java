@@ -34,9 +34,6 @@ class UserDaoImpl implements UserDao {
         if (emails.contains(user.getEmail())) {
             throw new RuntimeException("Такой email уже имеется");
         }
-        if (user.getEmail() == null || !user.getEmail().contains("@")) {
-            throw new ValidationException("Не указан Email или указан некорректно");
-        }
         userId++;
         emails.add(user.getEmail());
         user.setId(userId);
@@ -45,20 +42,16 @@ class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User updateUser(Long userId, User newUser) {
-        newUser.setId(userId);
-        User oldUser = users.get(userId);
+    public User updateUser(User newUser) {
+        User oldUser = users.get(newUser.getId());
 
         if (newUser.getEmail() != null && emails.contains(newUser.getEmail()) && !oldUser.getEmail().equals(newUser.getEmail())) {
             throw new RuntimeException("Такой email уже имеется");
         }
-        if (newUser.getEmail() != null && !newUser.getEmail().contains("@")) {
-            throw new ValidationException("Не указан Email или указан некорректно");
-        }
 
         newUser.setName(newUser.getName() != null ? newUser.getName() : oldUser.getName());
         newUser.setEmail(newUser.getEmail() != null ? newUser.getEmail() : oldUser.getEmail());
-        users.put(userId, newUser);
+        users.put(newUser.getId(), newUser);
 
         emails.remove(oldUser.getEmail());
         emails.add(newUser.getEmail());

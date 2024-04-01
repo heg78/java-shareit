@@ -13,5 +13,5 @@ public interface UserDao {
 
     User saveUser(User user);
 
-    User updateUser(Long userId, User user);
+    User updateUser(User user);
 }

@@ -6,6 +6,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/items")
@@ -14,27 +15,27 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<Item> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getAllItems(userId);
+    public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.getAllItems(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @GetMapping("/{itemId}")
-    public Item getItem(@PathVariable long itemId) {
-        return itemService.getItem(itemId);
+    public ItemDto getItem(@PathVariable long itemId) {
+        return ItemMapper.toItemDto(itemService.getItem(itemId));
     }
 
     @PostMapping
-    public Item saveNewItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody Item item) {
-        return itemService.saveItem(userId, item);
+    public ItemDto saveNewItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto item) {
+        return ItemMapper.toItemDto(itemService.saveItem(userId, ItemMapper.toItem(item)));
     }
 
     @PatchMapping("/{itemId}")
-    public Item updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody ItemDto item) {
-        return itemService.updateItem(userId, itemId, ItemMapper.toItem(item));
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody ItemDto item) {
+        return ItemMapper.toItemDto(itemService.updateItem(userId, itemId, ItemMapper.toItem(item)));
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestParam String text) {
-        return itemService.searchItem(text);
+    public List<ItemDto> searchItem(@RequestParam String text) {
+        return itemService.searchItem(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 }
