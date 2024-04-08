@@ -4,20 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserDao;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemDao itemDao;
-    private final UserService userService;
+    private final UserDao userDao;
 
-    public List<Item> getAllItems(Long userId) {
-        return itemDao.getAllItems(userId);
+    public List<ItemDto> getAllItems(Long userId) {
+        return itemDao.getAllItems(userDao.getUser(userId)).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     public Item getItem(Long itemId) {
@@ -31,39 +34,28 @@ public class ItemService {
         return itemDao.searchItem(text);
     }
 
-    public Item saveItem(Long userId, Item item) {
-        if (userService.getUser(userId) == null) {
-            throw new NotFoundException("Не найден пользователь");
-        }
-        if (item.getAvailable() == null ||
-                item.getName() == null ||
-                item.getDescription() == null ||
-                item.getName().isBlank() ||
-                item.getDescription().isBlank()
-        ) {
-            throw new ValidationException("Некорректно заполнен Item");
-        }
-        item.setOwner(userId);
-        itemDao.saveItem(item);
-        return item;
+    public ItemDto saveItem(Long userId, ItemDto itemDto) {
+        User user = userDao.getUser(userId);
+
+        Item item = ItemMapper.toItem(itemDto);
+        item.setOwner(user);
+        return  ItemMapper.toItemDto(itemDao.saveItem(item));
     }
 
-    public Item updateItem(Long userId, Long itemId, Item newItem) {
+    public ItemDto updateItem(Long userId, Long itemId, ItemDto newItem) {
         if (userId == null) {
             throw new ValidationException("");
         }
         Item oldItem = getItem(itemId);
-        if (!userId.equals(oldItem.getOwner())) {
+        if (!userId.equals(oldItem.getOwner().getId())) {
             throw new NotFoundException("");
         }
-        newItem.setId(itemId);
-        newItem.setId(newItem.getId() != null ? newItem.getId() : oldItem.getId());
-        newItem.setName(newItem.getName() != null ? newItem.getName() : oldItem.getName());
-        newItem.setDescription(newItem.getDescription() != null ? newItem.getDescription() : oldItem.getDescription());
-        newItem.setAvailable(newItem.getAvailable() != null ? newItem.getAvailable() : oldItem.getAvailable());
-        newItem.setOwner(userId);
-        itemDao.updateItem(newItem);
-        return newItem;
+        oldItem.setId(itemId);
+        oldItem.setName(newItem.getName() != null ? newItem.getName() : oldItem.getName());
+        oldItem.setDescription(newItem.getDescription() != null ? newItem.getDescription() : oldItem.getDescription());
+        oldItem.setAvailable(newItem.getAvailable() != null ? newItem.getAvailable() : oldItem.getAvailable());
+        oldItem.setOwner(userDao.getUser(userId));
+        return ItemMapper.toItemDto(itemDao.updateItem(oldItem));
     }
 
 }
