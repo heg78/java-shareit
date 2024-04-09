@@ -21,8 +21,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable long itemId) {
-        return ItemMapper.toItemDto(itemService.getItem(itemId));
+    public ItemDto getItem(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId) {
+        //return ItemMapper.toItemDto(itemService.getItem(itemId), List.of());
+        return itemService.getItem(userId, itemId);
     }
 
     @PostMapping
@@ -37,6 +38,6 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam String text) {
-        return itemService.searchItem(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemService.searchItem(text).stream().map(i -> ItemMapper.toItemDto(i, List.of())).collect(Collectors.toList());
     }
 }

@@ -37,4 +37,9 @@ class UserDaoImpl implements UserDao {
     public List<User> findByEmailIgnoreCase(String emailSearch) {
         return userRepository.findByEmailIgnoreCase(emailSearch);
     }
+
+    @Override
+    public boolean exists(Long userId) {
+        return userRepository.existsById(userId);
+    }
 }

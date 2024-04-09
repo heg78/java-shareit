@@ -15,4 +15,6 @@ public interface UserDao {
     User saveUser(User user);
 
     List<User> findByEmailIgnoreCase(String emailSearch);
+
+    boolean exists(Long userId);
 }

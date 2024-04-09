@@ -8,6 +8,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.List;
+
 public class BookingMapper {
     public static Booking toBooking(BookingDto bookingDto, User user, Item item) {
         Booking booking = new Booking();
@@ -25,7 +27,7 @@ public class BookingMapper {
         bookingFullDto.setId(booking.getId());
         bookingFullDto.setStart(booking.getStart());
         bookingFullDto.setEnd(booking.getEnd());
-        bookingFullDto.setItem(ItemMapper.toItemDto(booking.getItem()));
+        bookingFullDto.setItem(ItemMapper.toItemDto(booking.getItem(), List.of()));
         bookingFullDto.setBooker(UserMapper.toUserDto(booking.getBooker()));
         bookingFullDto.setStatus(booking.getStatus());
         return bookingFullDto;

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingFullDto;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -25,10 +27,22 @@ public class BookingController {
         return bookingService.update(bookingId, userId, approved);
     }
 
-//    @GetMapping("/{bookingId}")
-//    public BookingFullDto getBookingById(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-//                                         @PathVariable long bookingId) {
-//        log.info("GET-запрос на получение данных о бронировании: userId = {}, bookingId = {}", userId, bookingId);
-//        return bookingService.getBookingById(bookingId, userId);
-//    }
+    @GetMapping("/{bookingId}")
+    public BookingFullDto getBookingById(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                         @PathVariable long bookingId) {
+        return bookingService.get(bookingId, userId);
+    }
+
+
+    @GetMapping
+    public List<BookingFullDto> getUserBookings(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                                  @RequestParam(defaultValue = "ALL", required = false) String state) {
+        return bookingService.getUserBookings(userId, state);
+    }
+
+    @GetMapping("/owner")
+    public List<BookingFullDto> getOwnerBookings(@RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                                 @RequestParam(defaultValue = "ALL", required = false) String state) {
+        return bookingService.getOwnerBookings(userId, state);
+    }
 }

@@ -18,7 +18,7 @@ public class ErrorHandler {
     public ResponseEntity<Map<String, String>> handleValidationException(final ValidationException e) {
         log.error("400 Ошибка валидации: {}", e.getMessage());
         return new ResponseEntity<>(
-                Map.of("error", "Ошибка валидации.",
+                Map.of("error", e.getMessage(),
                         "errorMessage", e.getMessage()),
                 HttpStatus.BAD_REQUEST
         );

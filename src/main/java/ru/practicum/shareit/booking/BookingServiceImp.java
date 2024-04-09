@@ -16,6 +16,9 @@ import ru.practicum.shareit.user.model.User;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,8 +71,65 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public BookingDto get(long bookingId, User user) {
-        return null;
+    public BookingFullDto get(long bookingId, long userId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+        if (!userRepository.exists(userId)) {
+            throw new NotFoundException("пользователь не найден");
+        }
+        if (userId != booking.getBooker().getId() && userId != booking.getItem().getOwner().getId()) {
+            throw new NotFoundException("Доступно только owner или booker!");
+        }
+        return BookingMapper.toBookingFullDto(booking);
+    }
+
+    @Override
+    public List<BookingFullDto> getUserBookings(long userId, String state) {
+        if (!userRepository.exists(userId)) {
+            throw new NotFoundException("пользователь не найден");
+        }
+        List<Booking> bookings = bookingRepository.findByBooker_Id(userId);
+        return filterState(bookings, State.valueOf(state)).stream()
+                .map(BookingMapper::toBookingFullDto)
+                .sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingFullDto> getOwnerBookings(long userId, String state) {
+        if (!userRepository.exists(userId)) {
+            throw new NotFoundException("пользователь не найден");
+        }
+        List<Booking> bookings = bookingRepository.getOwnerBookings(userId);
+        return filterState(bookings, State.valueOf(state)).stream()
+                .map(BookingMapper::toBookingFullDto)
+                .sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
+                .collect(Collectors.toList());
+    }
+
+    private List<Booking> filterState(List<Booking> bookings, State state) {
+        switch (state) {
+            case ALL:
+               return bookings;
+            case CURRENT:
+                return  bookings.stream().filter(b-> b.getEnd().isBefore(LocalDateTime.now()))
+                        .collect(Collectors.toList());
+            case PAST:
+                return bookings.stream().filter(b -> b.getEnd().isAfter(LocalDateTime.now()))
+                        .collect(Collectors.toList());
+            case FUTURE:
+                return bookings.stream().filter(b -> b.getStart().isAfter(LocalDateTime.now()))
+                        .collect(Collectors.toList());
+            case WAITING:
+                return bookings.stream().filter(b -> b.getStatus().equals(Status.WAITING))
+                        .collect(Collectors.toList());
+            case REJECTED:
+                return bookings.stream().filter(b -> b.getStatus().equals(Status.REJECTED))
+                        .collect(Collectors.toList());
+            case UNSUPPORTED_STATUS:
+                throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+            default:
+                throw new ValidationException("Unknown state");
+        }
     }
 }
 
