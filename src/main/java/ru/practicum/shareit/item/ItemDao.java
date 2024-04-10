@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -11,6 +12,8 @@ public interface ItemDao {
     Item getItem(Long itemId);
 
     Item saveItem(Item item);
+
+    Comment saveComment(Comment comment);
 
     Item updateItem(Item item);
 

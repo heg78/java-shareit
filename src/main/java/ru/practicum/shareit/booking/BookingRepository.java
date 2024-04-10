@@ -15,6 +15,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by bkg.start_date desc", nativeQuery = true)
     List<Booking> getOwnerBookings(long userId);
 
-    @Query(value = "SELECT * FROM BOOKINGS B WHERE B.ITEM_ID = ?1 ORDER BY END_DATE LIMIT 2", nativeQuery = true)
-    List<Booking> findLastNextDate(Long itemId);
+    @Query(value = "SELECT B.* FROM BOOKINGS B JOIN ITEMS I ON I.ID=B.ITEM_ID " +
+            "WHERE B.ITEM_ID = ?1 AND I.OWNER = ?2 AND STATUS = 'APPROVED' ORDER BY END_DATE LIMIT 2"
+            , nativeQuery = true)
+    List<Booking> findLastNextDate(Long itemId, Long userId);
 }

@@ -25,6 +25,7 @@ public class ItemMapper {
                 item.getAvailable(),
                 item.getOwner().getId(),
                 bookings.isEmpty() ? null : BookingMapper.toBookingDto(bookings.get(0)),
-                bookings.size()<2 ? null : BookingMapper.toBookingDto(bookings.get(1)));
+                bookings.size()<2 ? null : BookingMapper.toBookingDto(bookings.get(1)),
+                List.of());
     }
 }
