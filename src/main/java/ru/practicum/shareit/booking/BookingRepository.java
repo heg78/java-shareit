@@ -22,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllItemsAndOwner(Long itemId, Long userId);
 
     @Query(value = "SELECT case when count(1) > 0 then true else false end FROM BOOKINGS B " +
-            "WHERE B.BOOKER_ID = ?2 AND B.ITEM_ID = ?1 AND B.STATUS != 'REJECTED'"
+            "WHERE B.BOOKER_ID = ?2 AND B.ITEM_ID = ?1 AND B.END_DATE < ?3 AND B.STATUS != 'REJECTED'"
             , nativeQuery = true)
     boolean existsByBookerAndItem(Long itemId, Long userId, LocalDateTime created);
 }

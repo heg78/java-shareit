@@ -71,6 +71,9 @@ public class ItemService {
     }
 
     public CommentDto saveComment(Long userId, Long itemId, CommentDto commentDto) {
+        if(commentDto.getText().isEmpty()) {
+            throw new ValidationException("Комментарий не должен быть пустым");
+        }
         User user = userRepository.getUser(userId);
         Item item = itemRepository.getItem(itemId);
         LocalDateTime commentCreated = LocalDateTime.now();
@@ -81,7 +84,7 @@ public class ItemService {
             comment.setCreated(LocalDateTime.now());
             return CommentMapper.toCommentDto(commentRepository.save(comment));
         } else {
-            throw new RuntimeException("Пользователь не может создать комментарий");
+            throw new ValidationException("Пользователь не может создать комментарий");
         }
     }
 }
