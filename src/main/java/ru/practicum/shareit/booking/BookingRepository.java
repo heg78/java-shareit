@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -16,7 +17,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> getOwnerBookings(long userId);
 
     @Query(value = "SELECT B.* FROM BOOKINGS B JOIN ITEMS I ON I.ID=B.ITEM_ID " +
-            "WHERE B.ITEM_ID = ?1 AND I.OWNER = ?2 AND STATUS = 'APPROVED' ORDER BY END_DATE LIMIT 2"
+            "WHERE B.ITEM_ID = ?1 AND I.OWNER = ?2 AND STATUS != 'REJECTED'"
             , nativeQuery = true)
-    List<Booking> findLastNextDate(Long itemId, Long userId);
+    List<Booking> findAllItemsAndOwner(Long itemId, Long userId);
+
+    @Query(value = "SELECT case when count(1) > 0 then true else false end FROM BOOKINGS B " +
+            "WHERE B.BOOKER_ID = ?2 AND B.ITEM_ID = ?1 AND B.STATUS != 'REJECTED'"
+            , nativeQuery = true)
+    boolean existsByBookerAndItem(Long itemId, Long userId, LocalDateTime created);
 }

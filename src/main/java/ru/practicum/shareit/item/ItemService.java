@@ -27,14 +27,14 @@ public class ItemService {
 
     public List<ItemDto> getAllItems(Long userId) {
         return itemRepository.getAllItems(userRepository.getUser(userId)).stream()
-                .map(i -> ItemMapper.toItemDto(i, bookingRepository.findLastNextDate(i.getId(), userId)))
+                .map(i -> ItemMapper.toItemDto(i, bookingRepository.findAllItemsAndOwner(i.getId(), userId)))
                 .collect(Collectors.toList());
     }
 
     public ItemDto getItem(Long userId, Long itemId) {
         Item item = itemRepository.getItem(itemId);
         if (userId.equals(item.getOwner().getId())) {
-            return ItemMapper.toItemDto(item, bookingRepository.findLastNextDate(itemId, userId));
+            return ItemMapper.toItemDto(item, bookingRepository.findAllItemsAndOwner(itemId, userId));
         }
         return ItemMapper.toItemDto(item, List.of());
     }
@@ -73,11 +73,15 @@ public class ItemService {
     public CommentDto saveComment(Long userId, Long itemId, CommentDto commentDto) {
         User user = userRepository.getUser(userId);
         Item item = itemRepository.getItem(itemId);
-        Comment comment = CommentMapper.toComment(commentDto);
-        comment.setAuthor(user);
-        comment.setItem(item);
-        comment.setCreated(LocalDateTime.now());
-        return CommentMapper.toCommentDto(commentRepository.save(comment));
+        LocalDateTime commentCreated = LocalDateTime.now();
+        if (bookingRepository.existsByBookerAndItem(itemId, userId, commentCreated)) {
+            Comment comment = CommentMapper.toComment(commentDto);
+            comment.setAuthor(user);
+            comment.setItem(item);
+            comment.setCreated(LocalDateTime.now());
+            return CommentMapper.toCommentDto(commentRepository.save(comment));
+        } else {
+            throw new RuntimeException("Пользователь не может создать комментарий");
+        }
     }
-
 }
