@@ -33,10 +33,11 @@ public class ItemService {
 
     public ItemDto getItem(Long userId, Long itemId) {
         Item item = itemRepository.getItem(itemId);
+        List<Comment> comments = commentRepository.findByItem_Id(itemId);
         if (userId.equals(item.getOwner().getId())) {
-            return ItemMapper.toItemDto(item, bookingRepository.findAllItemsAndOwner(itemId, userId));
+            return ItemMapper.toItemDto(item, bookingRepository.findAllItemsAndOwner(itemId, userId), comments);
         }
-        return ItemMapper.toItemDto(item, List.of());
+        return ItemMapper.toItemDto(item, List.of(), comments);
     }
 
     public List<Item> searchItem(String text) {
@@ -71,7 +72,7 @@ public class ItemService {
     }
 
     public CommentDto saveComment(Long userId, Long itemId, CommentDto commentDto) {
-        if(commentDto.getText().isEmpty()) {
+        if (commentDto.getText().isEmpty()) {
             throw new ValidationException("Комментарий не должен быть пустым");
         }
         User user = userRepository.getUser(userId);

@@ -22,8 +22,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingFullDto update(@PathVariable long bookingId,
-                                        @RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                        @RequestParam(required = false) Boolean approved) {
+                                 @RequestHeader(value = "X-Sharer-User-Id") long userId,
+                                 @RequestParam(required = false) Boolean approved) {
         return bookingService.update(bookingId, userId, approved);
     }
 
@@ -36,7 +36,7 @@ public class BookingController {
 
     @GetMapping
     public List<BookingFullDto> getUserBookings(@RequestHeader(value = "X-Sharer-User-Id") long userId,
-                                                  @RequestParam(defaultValue = "ALL", required = false) String state) {
+                                                @RequestParam(defaultValue = "ALL", required = false) String state) {
         return bookingService.getUserBookings(userId, state);
     }
 

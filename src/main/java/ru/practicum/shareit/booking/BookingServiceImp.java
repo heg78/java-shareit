@@ -9,12 +9,9 @@ import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.ValidationException;
 import ru.practicum.shareit.item.ItemDao;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.UserDao;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -109,12 +106,12 @@ public class BookingServiceImp implements BookingService {
     private List<Booking> filterState(List<Booking> bookings, State state) {
         switch (state) {
             case ALL:
-               return bookings;
+                return bookings;
             case CURRENT:
-                return  bookings.stream().filter(b-> b.getEnd().isBefore(LocalDateTime.now()))
+                return bookings.stream().filter(b -> b.getStart().isBefore(LocalDateTime.now()) && b.getEnd().isAfter(LocalDateTime.now()))
                         .collect(Collectors.toList());
             case PAST:
-                return bookings.stream().filter(b -> b.getEnd().isAfter(LocalDateTime.now()))
+                return bookings.stream().filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
                         .collect(Collectors.toList());
             case FUTURE:
                 return bookings.stream().filter(b -> b.getStart().isAfter(LocalDateTime.now()))

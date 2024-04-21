@@ -12,6 +12,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query(value = " select * from items it where it.available = true and " +
             "(upper(it.name) like upper('%' || ?1 || '%') " +
-            " or upper(it.description) like upper('%' || ?1 || '%'))",  nativeQuery = true)
+            " or upper(it.description) like upper('%' || ?1 || '%'))", nativeQuery = true)
     List<Item> searchAvialableByText(String text);
 }

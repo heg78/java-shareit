@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +40,7 @@ public class UserService {
         }
 
         User oldUser = userDao.getUser(userId);
-        boolean existEmail = ! userDao.findByEmailIgnoreCase(newUserDto.getEmail()).isEmpty();
+        boolean existEmail = !userDao.findByEmailIgnoreCase(newUserDto.getEmail()).isEmpty();
         if (newUserDto.getEmail() != null && existEmail && !oldUser.getEmail().equals(newUserDto.getEmail())) {
             throw new RuntimeException("Такой email уже имеется");
         }
