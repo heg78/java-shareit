@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserDao;
 import ru.practicum.shareit.user.model.User;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +25,7 @@ public class BookingServiceImp implements BookingService {
     private final UserDao userRepository;
     private final ItemDao itemRepository;
 
+    @Transactional
     @Override
     public BookingFullDto add(long userId, BookingDto bookingDto) {
         Item item = itemRepository.getItem(bookingDto.getItemId());
@@ -47,6 +49,7 @@ public class BookingServiceImp implements BookingService {
         return BookingMapper.toBookingFullDto(bookingRepository.save(booking));
     }
 
+    @Transactional
     @Override
     public BookingFullDto update(long bookingId, long userId, Boolean approved) {
         Booking oldBooking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("Не найдено бронирование"));

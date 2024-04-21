@@ -2,10 +2,12 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.exception.EmailValidationExcepotion;
 import ru.practicum.shareit.common.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,10 +24,12 @@ public class UserService {
         return UserMapper.toUserDto(userDao.getUser(userId));
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
         userDao.deleteUser(userId);
     }
 
+    @Transactional
     public UserDto saveUser(UserDto userDto) {
         if (userDto.getEmail() == null || !userDto.getEmail().contains("@")) {
             throw new ValidationException("Не указан Email или указан некорректно");
@@ -33,6 +37,7 @@ public class UserService {
         return UserMapper.toUserDto(userDao.saveUser(UserMapper.toUser(userDto)));
     }
 
+    @Transactional
     public UserDto updateUser(Long userId, UserDto newUserDto) {
         newUserDto.setId(userId);
         if (newUserDto.getEmail() != null && !newUserDto.getEmail().contains("@")) {
@@ -42,7 +47,7 @@ public class UserService {
         User oldUser = userDao.getUser(userId);
         boolean existEmail = !userDao.findByEmailIgnoreCase(newUserDto.getEmail()).isEmpty();
         if (newUserDto.getEmail() != null && existEmail && !oldUser.getEmail().equals(newUserDto.getEmail())) {
-            throw new RuntimeException("Такой email уже имеется");
+            throw new EmailValidationExcepotion("Такой email уже имеется");
         }
 
         oldUser.setName(newUserDto.getName() != null ? newUserDto.getName() : oldUser.getName());

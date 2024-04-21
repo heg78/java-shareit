@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserDao;
 import ru.practicum.shareit.user.model.User;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ItemService {
         return itemRepository.searchItem(text);
     }
 
+    @Transactional
     public ItemDto saveItem(Long userId, ItemDto itemDto) {
         User user = userRepository.getUser(userId);
 
@@ -55,6 +57,7 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.saveItem(item), List.of());
     }
 
+    @Transactional
     public ItemDto updateItem(Long userId, Long itemId, ItemDto newItem) {
         if (userId == null) {
             throw new ValidationException("");
@@ -71,6 +74,7 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.updateItem(oldItem), List.of());
     }
 
+    @Transactional
     public CommentDto saveComment(Long userId, Long itemId, CommentDto commentDto) {
         if (commentDto.getText().isEmpty()) {
             throw new ValidationException("Комментарий не должен быть пустым");
