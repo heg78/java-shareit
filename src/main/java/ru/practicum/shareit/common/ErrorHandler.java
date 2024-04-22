@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.practicum.shareit.common.exception.EmailValidationExcepotion;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.ValidationException;
 
@@ -18,13 +19,13 @@ public class ErrorHandler {
     public ResponseEntity<Map<String, String>> handleValidationException(final ValidationException e) {
         log.error("400 Ошибка валидации: {}", e.getMessage());
         return new ResponseEntity<>(
-                Map.of("error", "Ошибка валидации.",
+                Map.of("error", e.getMessage(),
                         "errorMessage", e.getMessage()),
                 HttpStatus.BAD_REQUEST
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler({RuntimeException.class, EmailValidationExcepotion.class})
     public ResponseEntity<Map<String, String>> handleException(final RuntimeException e) {
         log.error("500 Ошибка: {}", e.getMessage());
         return new ResponseEntity<>(

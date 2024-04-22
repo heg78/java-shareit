@@ -8,26 +8,25 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
-@Table(name = "items", schema = "public")
+@Table(name = "comments", schema = "public")
 @Entity
 @Getter
 @Setter
 @ToString
-public class Item {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     @NotEmpty
-    private String name;
-    @NotNull
-    @NotEmpty
-    private String description;
-    @NotNull
-    private Boolean available;
+    private String text;
     @ManyToOne
-    @JoinColumn(name = "owner", nullable = false)
-    private User owner;
-    private Long request;
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+    @ManyToOne
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
+    private LocalDateTime created;
 }
