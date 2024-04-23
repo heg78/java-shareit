@@ -37,7 +37,8 @@ public class ItemMapper {
                         .max(Comparator.comparing(BookingDto::getStart)).orElse(null),
                 bookings.stream().filter(b -> b.getStart().isAfter(LocalDateTime.now())).map(BookingMapper::toBookingDto)
                         .min(Comparator.comparing(BookingDto::getStart)).orElse(null),
-                List.of()
+                List.of(),
+                item.getRequest() == null ? null : item.getRequest().getId()
         );
     }
 

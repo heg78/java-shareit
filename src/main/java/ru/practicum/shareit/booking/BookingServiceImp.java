@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingFullDto;
@@ -83,23 +84,29 @@ public class BookingServiceImp implements BookingService {
     }
 
     @Override
-    public List<BookingFullDto> getUserBookings(long userId, String state) {
+    public List<BookingFullDto> getUserBookings(long userId, String state, Integer from, Integer size) {
         if (!userRepository.exists(userId)) {
             throw new NotFoundException("пользователь не найден");
         }
-        List<Booking> bookings = bookingRepository.findByBooker_Id(userId);
+        if (from<0 || size<0) {
+            throw new ValidationException("Указано отрицательное число");
+        }
+        List<Booking> bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(from/size, size));
         return filterState(bookings, State.valueOf(state)).stream()
                 .map(BookingMapper::toBookingFullDto)
-                .sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
+                //.sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingFullDto> getOwnerBookings(long userId, String state) {
+    public List<BookingFullDto> getOwnerBookings(long userId, String state, Integer from, Integer size) {
         if (!userRepository.exists(userId)) {
             throw new NotFoundException("пользователь не найден");
         }
-        List<Booking> bookings = bookingRepository.getOwnerBookings(userId);
+        if (from<0 || size<0) {
+            throw new ValidationException("Указано отрицательное число");
+        }
+        List<Booking> bookings = bookingRepository.getOwnerBookings(userId, PageRequest.of(from/size, size));
         return filterState(bookings, State.valueOf(state)).stream()
                 .map(BookingMapper::toBookingFullDto)
                 .sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
