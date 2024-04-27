@@ -39,7 +39,7 @@ class ItemRequestControllerTest {
     private UserDto userDto;
     private User user;
 
-    private final String X_USER = "X-Sharer-User-Id";
+    private final String XUSER = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {
@@ -60,7 +60,7 @@ class ItemRequestControllerTest {
         String webResult = mvc.perform(post("/requests")
                         .contentType("application/json")
                         .content(mapper.writeValueAsString(itemRequestDto))
-                        .header(X_USER, user.getId()))
+                        .header(XUSER, user.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -75,7 +75,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.get(anyLong(), anyLong())).thenReturn(itemRequestDto);
 
         String webResult = mvc.perform(MockMvcRequestBuilders.get("/requests/{requestId}", 1L)
-                        .header(X_USER, user.getId()))
+                        .header(XUSER, user.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -92,7 +92,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getUserRequests(anyLong())).thenReturn(List.of(itemRequestDto));
 
         String webResult = mvc.perform(MockMvcRequestBuilders.get("/requests")
-                        .header(X_USER, user.getId()))
+                        .header(XUSER, user.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -109,7 +109,7 @@ class ItemRequestControllerTest {
         when(itemRequestService.getNotUserRequests(anyLong(), anyInt(), anyInt())).thenReturn(List.of(itemRequestDto));
 
         String webResult = mvc.perform(MockMvcRequestBuilders.get("/requests/all")
-                        .header(X_USER, user.getId()))
+                        .header(XUSER, user.getId()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
