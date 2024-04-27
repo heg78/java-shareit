@@ -39,7 +39,7 @@ class ItemRequestControllerTest {
     private UserDto userDto;
     private User user;
 
-    private final String XUSER = "X-Sharer-User-Id";
+    private static final String XUSER = "X-Sharer-User-Id";
 
     @BeforeEach
     void setUp() {
