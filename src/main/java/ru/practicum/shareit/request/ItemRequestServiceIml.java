@@ -8,7 +8,6 @@ import ru.practicum.shareit.common.exception.ValidationException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserDao;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import javax.transaction.Transactional;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ItemRequestServiceIml implements ItemRequestService{
+public class ItemRequestServiceIml implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserDao userRepository;
 
@@ -60,7 +59,7 @@ public class ItemRequestServiceIml implements ItemRequestService{
     @Override
     public List<ItemRequestDto> getNotUserRequests(long userId, Integer from, Integer size) {
         userRepository.getUser(userId);
-        if (from<0 || size<0) {
+        if (from < 0 || size < 0) {
             throw new ValidationException("Указано отрицательное число");
         }
         List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(userId, PageRequest.of(from, size));

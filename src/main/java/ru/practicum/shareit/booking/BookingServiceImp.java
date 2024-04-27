@@ -88,10 +88,10 @@ public class BookingServiceImp implements BookingService {
         if (!userRepository.exists(userId)) {
             throw new NotFoundException("пользователь не найден");
         }
-        if (from<0 || size<0) {
+        if (from < 0 || size < 0) {
             throw new ValidationException("Указано отрицательное число");
         }
-        List<Booking> bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(from/size, size));
+        List<Booking> bookings = bookingRepository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(from / size, size));
         return filterState(bookings, State.valueOf(state)).stream()
                 .map(BookingMapper::toBookingFullDto)
                 //.sorted(Comparator.comparing(BookingFullDto::getStart).reversed())
@@ -103,10 +103,10 @@ public class BookingServiceImp implements BookingService {
         if (!userRepository.exists(userId)) {
             throw new NotFoundException("пользователь не найден");
         }
-        if (from<0 || size<0) {
+        if (from < 0 || size < 0) {
             throw new ValidationException("Указано отрицательное число");
         }
-        List<Booking> bookings = bookingRepository.getOwnerBookings(userId, PageRequest.of(from/size, size));
+        List<Booking> bookings = bookingRepository.getOwnerBookings(userId, PageRequest.of(from / size, size));
         return filterState(bookings, State.valueOf(state)).stream()
                 .map(BookingMapper::toBookingFullDto)
                 .sorted(Comparator.comparing(BookingFullDto::getStart).reversed())

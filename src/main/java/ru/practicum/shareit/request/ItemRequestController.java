@@ -15,13 +15,13 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto add(@RequestHeader("X-Sharer-User-Id") long userId,
-                                 @RequestBody @Validated ItemRequestDto itemRequestDto) {
+                              @RequestBody @Validated ItemRequestDto itemRequestDto) {
         return itemRequestService.add(userId, itemRequestDto);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestDto get(@RequestHeader("X-Sharer-User-Id") long userId,
-                                 @PathVariable Long requestId) {
+                              @PathVariable Long requestId) {
         return itemRequestService.get(userId, requestId);
     }
 
@@ -32,8 +32,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getNotUserRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                  @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                                   @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                   @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return itemRequestService.getNotUserRequests(userId, from, size);
     }
 
