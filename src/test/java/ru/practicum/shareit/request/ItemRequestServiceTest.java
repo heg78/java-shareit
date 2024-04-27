@@ -44,7 +44,7 @@ class ItemRequestServiceTest {
     void setUp() {
         userDto = new UserDto(1L, "name", "email@email.ru");
         user = UserMapper.toUser(userDto);
-        itemRequestDto = new ItemRequestDto(1l, "Decription", user, null, List.of());
+        itemRequestDto = new ItemRequestDto(1L, "Decription", user, null, List.of());
         itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto);
     }
 
