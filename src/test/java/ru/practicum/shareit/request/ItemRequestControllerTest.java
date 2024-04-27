@@ -79,7 +79,8 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString();;
+                .getContentAsString();
+        ;
 
         verify(itemRequestService).get(1L, 1L);
         assertEquals(mapper.writeValueAsString(itemRequestDto), webResult);
@@ -95,7 +96,8 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString();;
+                .getContentAsString();
+        ;
 
         verify(itemRequestService).getUserRequests(1L);
         assertEquals(mapper.writeValueAsString(List.of(itemRequestDto)), webResult);
@@ -111,7 +113,8 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString();;
+                .getContentAsString();
+        ;
 
         verify(itemRequestService).getNotUserRequests(anyLong(), anyInt(), anyInt());
         assertEquals(mapper.writeValueAsString(List.of(itemRequestDto)), webResult);

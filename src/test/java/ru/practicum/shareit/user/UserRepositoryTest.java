@@ -31,7 +31,7 @@ class UserRepositoryTest {
 
     @Test
     void findByEmailIgnoreCaseTest() {
-       List<User> foundUser = userRepository.findByEmailIgnoreCase("email@email.ru");
+        List<User> foundUser = userRepository.findByEmailIgnoreCase("email@email.ru");
 
         assertEquals(foundUser.size(), 1);
         assertEquals(foundUser.get(0).getEmail(), "email@email.ru");
