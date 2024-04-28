@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.common.exception.NotFoundException;
 import ru.practicum.shareit.common.exception.ValidationException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.ItemDaoImp;
 import ru.practicum.shareit.request.ItemRequestMapper;
@@ -26,6 +28,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +59,7 @@ class ItemServiceTest {
     private ItemRequest itemRequest;
     private ItemDto itemDto;
     private Item item;
+    private CommentDto commentDto;
 
     @BeforeEach
     void setUp() {
@@ -66,6 +70,7 @@ class ItemServiceTest {
         itemDto = new ItemDto(1L, "ItemName", "ItemDescr", true, 1L, null, null, List.of(), null);
         item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
+        commentDto = new CommentDto(1L, "Comment text", "name`", 1L, null);
     }
 
     @Test
@@ -147,6 +152,30 @@ class ItemServiceTest {
     }
 
     @Test
-    void saveComment() {
+    void saveEmptyCommentTest() {
+        commentDto.setText("");
+        Assertions.assertThrows(ValidationException.class, () -> itemService.saveComment(1L, 1L, commentDto));
+    }
+
+    @Test
+    void saveCommentNotCorrectUserTest() {
+        when(itemRepository.getItem(anyLong())).thenReturn(item);
+        when(userRepository.getUser(anyLong())).thenReturn(user);
+        when(bookingRepository.existsByBookerAndItem(anyLong(), anyLong(), any(LocalDateTime.class))).thenReturn(false);
+        Assertions.assertThrows(ValidationException.class, () -> itemService.saveComment(1L, 1L, commentDto));
+    }
+    @Test
+    void saveCommentTest() {
+        Comment testComment = CommentMapper.toComment(commentDto);
+        testComment.setAuthor(user);
+        testComment.setItem(item);
+        testComment.setCreated(LocalDateTime.now());
+        commentDto.setCreated(testComment.getCreated());
+        when(itemRepository.getItem(anyLong())).thenReturn(item);
+        when(userRepository.getUser(anyLong())).thenReturn(user);
+        when(bookingRepository.existsByBookerAndItem(anyLong(), anyLong(), any(LocalDateTime.class))).thenReturn(true);
+        when(commentRepository.save(any(Comment.class))).thenReturn(testComment);
+        CommentDto testCommentDto = itemService.saveComment(1L, 1L, commentDto);
+        assertEquals(testCommentDto, commentDto);
     }
 }
