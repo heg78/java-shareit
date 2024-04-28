@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,7 +62,7 @@ class UserControllerTest {
     void saveNewUserTest() {
         when(userService.saveUser(userDto)).thenReturn(userDto);
 
-        String result = mvc.perform(post("/users")
+        String resultMvc = mvc.perform(post("/users")
                         .contentType("application/json")
                         .content(mapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
@@ -68,7 +70,49 @@ class UserControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(mapper.writeValueAsString(userDto), result);
+        assertEquals(mapper.writeValueAsString(userDto), resultMvc);
     }
 
+    @SneakyThrows
+    @Test
+    void getAllUsersTest() {
+        when(userService.getAllUsers()).thenReturn(List.of(userDto));
+        String resultMvc = mvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userService).getAllUsers();
+        assertEquals(mapper.writeValueAsString(List.of(userDto)), resultMvc);
+    }
+
+    @SneakyThrows
+    @Test
+    void deleteUserTest() {
+        String resultMvc = mvc.perform(MockMvcRequestBuilders.delete("/users/{userId}", 1L))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        verify(userService).deleteUser(1L);
+    }
+
+    @SneakyThrows
+    @Test
+    void updateUserTest() {
+        long userId = 1L;
+        when(userService.updateUser(userId, userDto)).thenReturn(userDto);
+
+        String resultMvc = mvc.perform(MockMvcRequestBuilders.patch("/users/{userId}", userId)
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(userDto)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        verify(userService).updateUser(userId, userDto);
+        assertEquals(mapper.writeValueAsString(userDto), resultMvc);
+    }
 }
