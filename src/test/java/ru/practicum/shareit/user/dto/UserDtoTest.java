@@ -16,7 +16,7 @@ class UserDtoTest {
 
     @Test
     @SneakyThrows
-    public void startSerializes() {
+    public void userDtoTest() {
         assertThat(json.write(userDto)).extractingJsonPathNumberValue("$.id").isEqualTo(userDto.getId().intValue());
         assertThat(json.write(userDto)).extractingJsonPathStringValue("$.email").isEqualTo(userDto.getEmail());
         assertThat(json.write(userDto)).extractingJsonPathStringValue("$.name").isEqualTo(userDto.getName());

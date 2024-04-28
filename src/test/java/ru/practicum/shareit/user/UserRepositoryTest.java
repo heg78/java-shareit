@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,9 +16,6 @@ class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    private TestEntityManager testEm;
 
     private final UserDto userDto = new UserDto(1L, "name", "email@email.ru");
     private final User user = UserMapper.toUser(userDto);

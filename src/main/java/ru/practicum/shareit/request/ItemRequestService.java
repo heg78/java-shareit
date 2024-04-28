@@ -7,8 +7,6 @@ import java.util.List;
 public interface ItemRequestService {
     ItemRequestDto add(long userId, ItemRequestDto itemRequestDto);
 
-    ItemRequestDto update(long userId, ItemRequestDto itemRequestDto);
-
     ItemRequestDto get(long userId, long itemRequestId);
 
     List<ItemRequestDto> getUserRequests(long userId);

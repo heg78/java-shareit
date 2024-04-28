@@ -34,11 +34,6 @@ public class ItemRequestServiceIml implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto update(long userId, ItemRequestDto itemRequestDto) {
-        return null;
-    }
-
-    @Override
     public ItemRequestDto get(long userId, long itemRequestId) {
         userRepository.getUser(userId);
         Optional<ItemRequest> itemRequest = itemRequestRepository.findById(itemRequestId);
