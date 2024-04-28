@@ -16,10 +16,8 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.ItemDaoImp;
 import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.request.ItemRequestRepository;
-import ru.practicum.shareit.request.ItemRequestServiceIml;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserDao;
@@ -31,7 +29,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -77,7 +74,7 @@ class ItemServiceTest {
     void getAllItemsTest() {
         when(itemRepository.getAllItems(any(User.class))).thenReturn(List.of(item));
         when(userRepository.getUser(anyLong())).thenReturn(user);
-        List<ItemDto> itemsDto =  itemService.getAllItems(1L);
+        List<ItemDto> itemsDto = itemService.getAllItems(1L);
         assertEquals(itemsDto.size(), 1);
         assertEquals(itemsDto.get(0).getDescription(), "ItemDescr");
     }
@@ -87,7 +84,7 @@ class ItemServiceTest {
         when(itemRepository.getItem(anyLong())).thenReturn(item);
         when(commentRepository.findByItem_Id(anyLong())).thenReturn(List.of());
         when(bookingRepository.findAllItemsAndOwner(anyLong(), anyLong())).thenReturn(List.of());
-        ItemDto testItemDto =  itemService.getItem(1L, 1L);
+        ItemDto testItemDto = itemService.getItem(1L, 1L);
         assertEquals(testItemDto, itemDto);
     }
 
@@ -95,20 +92,20 @@ class ItemServiceTest {
     void getItemUserNotSameOvnerTest() {
         when(itemRepository.getItem(anyLong())).thenReturn(item);
         when(commentRepository.findByItem_Id(anyLong())).thenReturn(List.of());
-        ItemDto testItemDto =  itemService.getItem(2L, 1L);
+        ItemDto testItemDto = itemService.getItem(2L, 1L);
         assertEquals(testItemDto, itemDto);
     }
 
     @Test
     void searchItemEmptyTextTest() {
-        List<Item> testItemList =  itemService.searchItem("");
+        List<Item> testItemList = itemService.searchItem("");
         assertEquals(testItemList, new ArrayList<>());
     }
 
     @Test
     void searchItemNotEmptyTextTest() {
         when(itemRepository.searchItem(anyString())).thenReturn(List.of(item));
-        List<Item> testItemList =  itemService.searchItem("search text");
+        List<Item> testItemList = itemService.searchItem("search text");
         assertEquals(testItemList, List.of(item));
     }
 
@@ -116,7 +113,7 @@ class ItemServiceTest {
     void saveItemTest() {
         when(userRepository.getUser(anyLong())).thenReturn(user);
         when(itemRepository.saveItem(any(Item.class))).thenReturn(item);
-        ItemDto testItemDto =  itemService.saveItem(1L, itemDto);
+        ItemDto testItemDto = itemService.saveItem(1L, itemDto);
         assertEquals(testItemDto, itemDto);
     }
 
@@ -127,7 +124,7 @@ class ItemServiceTest {
         when(itemRepository.saveItem(any(Item.class))).thenReturn(item);
         when(itemRequestRepository.getReferenceById(anyLong())).thenReturn(itemRequest);
         itemDto.setRequestId(1L);
-        ItemDto testItemDto =  itemService.saveItem(1L, itemDto);
+        ItemDto testItemDto = itemService.saveItem(1L, itemDto);
         assertEquals(testItemDto, itemDto);
     }
 
@@ -147,7 +144,7 @@ class ItemServiceTest {
         when(itemRepository.getItem(anyLong())).thenReturn(item);
         when(itemRepository.updateItem(any(Item.class))).thenReturn(item);
         when(userRepository.getUser(anyLong())).thenReturn(user);
-        ItemDto testItemDto =  itemService.updateItem(1L, 1L, itemDto);
+        ItemDto testItemDto = itemService.updateItem(1L, 1L, itemDto);
         assertEquals(testItemDto, itemDto);
     }
 
@@ -164,6 +161,7 @@ class ItemServiceTest {
         when(bookingRepository.existsByBookerAndItem(anyLong(), anyLong(), any(LocalDateTime.class))).thenReturn(false);
         Assertions.assertThrows(ValidationException.class, () -> itemService.saveComment(1L, 1L, commentDto));
     }
+
     @Test
     void saveCommentTest() {
         Comment testComment = CommentMapper.toComment(commentDto);
