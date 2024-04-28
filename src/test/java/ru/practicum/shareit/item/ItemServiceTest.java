@@ -67,7 +67,7 @@ class ItemServiceTest {
         itemDto = new ItemDto(1L, "ItemName", "ItemDescr", true, 1L, null, null, List.of(), null);
         item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
-        commentDto = new CommentDto(1L, "Comment text", "name`", 1L, null);
+        commentDto = new CommentDto(1L, "Comment text", "name", 1L, null);
     }
 
     @Test
