@@ -10,13 +10,14 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemRequestMapperTest {
     private ItemRequest itemRequest;
     private ItemRequestDto itemRequestDto;
     private UserDto userDto;
     private User user;
+
     @BeforeEach
     void setUp() {
         userDto = new UserDto(1L, "name", "email@email.ru");
@@ -24,6 +25,7 @@ class ItemRequestMapperTest {
         itemRequestDto = new ItemRequestDto(1L, "Decription", user, null, List.of());
         itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto);
     }
+
     @Test
     void toItemRequest() {
         ItemRequest testItemRequest = ItemRequestMapper.toItemRequest(itemRequestDto);

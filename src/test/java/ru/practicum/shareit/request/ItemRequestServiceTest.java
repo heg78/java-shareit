@@ -97,13 +97,13 @@ class ItemRequestServiceTest {
     void getNotUserRequestsTest() {
         when(itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(anyLong(), any(PageRequest.class))).thenReturn(List.of(itemRequest));
         when(userRepository.getUser(anyLong())).thenReturn(user);
-        List<ItemRequestDto> testItemRequestDtoList = itemRequestService.getNotUserRequests(1L,1, 1);
+        List<ItemRequestDto> testItemRequestDtoList = itemRequestService.getNotUserRequests(1L, 1, 1);
         assertEquals(testItemRequestDtoList, List.of(itemRequestDto));
     }
 
     @Test
     void getNotUserRequestsBadPagingTest() {
         when(userRepository.getUser(anyLong())).thenReturn(user);
-        Assertions.assertThrows(ValidationException.class, () -> itemRequestService.getNotUserRequests(1L,-1, -1));
+        Assertions.assertThrows(ValidationException.class, () -> itemRequestService.getNotUserRequests(1L, -1, -1));
     }
 }

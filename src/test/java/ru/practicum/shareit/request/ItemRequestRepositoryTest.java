@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -52,7 +51,7 @@ class ItemRequestRepositoryTest {
 
     @Test
     void findAllByRequesterIdNotOrderByCreatedDescTest() {
-        List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(2L, PageRequest.of(0,10));
+        List<ItemRequest> itemRequestList = itemRequestRepository.findAllByRequesterIdNotOrderByCreatedDesc(2L, PageRequest.of(0, 10));
         assertEquals(itemRequestList.size(), 1);
         assertEquals(itemRequestList.get(0).getDescription(), "Decription");
     }
