@@ -41,6 +41,13 @@ class UserServiceTest {
     }
 
     @Test
+    void addNewUserEmptyEmailTest() {
+        UserDto userEmptyEmailDto = userDto;
+        userEmptyEmailDto.setEmail("");
+        Assertions.assertThrows(ValidationException.class, () -> userService.saveUser(userDto));
+    }
+
+    @Test
     void getAllUsersTest() {
         when(userDao.getAllUsers()).thenReturn(List.of(user));
         List<UserDto> users = userService.getAllUsers();
@@ -66,9 +73,20 @@ class UserServiceTest {
     void updateUserSameEmailTest() {
         when(userDao.getUser(anyLong())).thenReturn(user);
         when(userDao.findByEmailIgnoreCase(anyString())).thenReturn(List.of(user));
-        UserDto userDtoEmptyEmail = userDto;
-        userDtoEmptyEmail.setEmail("email2@email.ru");
-        Assertions.assertThrows(EmailValidationExcepotion.class, () -> userService.updateUser(1L, userDtoEmptyEmail));
+        UserDto userDtoSameEmail = userDto;
+        userDtoSameEmail.setEmail("email2@email.ru");
+        Assertions.assertThrows(EmailValidationExcepotion.class, () -> userService.updateUser(1L, userDtoSameEmail));
+    }
+
+    @Test
+    void updateUserTest() {
+        when(userDao.getUser(anyLong())).thenReturn(user);
+        when(userDao.findByEmailIgnoreCase(anyString())).thenReturn(List.of());
+        UserDto userDtoNewEmail = userDto;
+        userDtoNewEmail.setEmail("email2@email.ru");
+        when(userDao.saveUser(any())).thenReturn(UserMapper.toUser(userDtoNewEmail));
+        UserDto updatedUserDto = userService.updateUser(1L, userDtoNewEmail);
+        assertEquals(updatedUserDto.getEmail(), "email2@email.ru");
     }
 
     @Test
