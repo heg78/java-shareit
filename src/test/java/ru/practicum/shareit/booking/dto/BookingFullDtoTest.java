@@ -17,7 +17,7 @@ class BookingFullDtoTest {
     @SneakyThrows
     public void bookingFullDtoTest() {
         BookingFullDto bookingFullDto = new BookingFullDto();
-        bookingFullDto.setId(1l);
+        bookingFullDto.setId(1L);
         assertThat(json.write(bookingFullDto)).extractingJsonPathNumberValue("$.id").isEqualTo(1);
     }
 
