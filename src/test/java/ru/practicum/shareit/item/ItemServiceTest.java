@@ -50,6 +50,7 @@ class ItemServiceTest {
     private ItemRequestRepository itemRequestRepository;
     @InjectMocks
     ItemService itemService;
+
     private UserDto userDto;
     private User user;
     private ItemRequestDto itemRequestDto;

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ItemRequestDtoTest {
     @Autowired
     private JacksonTester<ItemRequestDto> json;
+
     private final User user = new User();
     private final ItemRequestDto itemRequestDto = new ItemRequestDto(1L, "Decription", user, null, List.of());
 
