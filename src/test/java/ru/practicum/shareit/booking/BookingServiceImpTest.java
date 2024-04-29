@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingFullDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -95,7 +96,6 @@ class BookingServiceImpTest {
         Item testItem = item;
         testItem.setAvailable(true);
         when(itemRepository.getItem(anyLong())).thenReturn(testItem);
-        //when(userRepository.getUser(anyLong())).thenReturn(user);
         Assertions.assertThrows(ValidationException.class, () -> bookingService.add(2L, bookingDto));
     }
 
@@ -128,7 +128,6 @@ class BookingServiceImpTest {
     void updateOnlyOwnerTest() {
         booking.setStatus(Status.APPROVED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        //bookingService.update(1L, 2l, true);
         Assertions.assertThrows(RuntimeException.class, () -> bookingService.update(1L, 2L, true));
     }
 
@@ -143,7 +142,7 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void updateTest2() {
+    void updateBookerTest() {
         User newBooker = new User();
         newBooker.setId(3L);
         booking.setStatus(Status.WAITING);
@@ -153,14 +152,110 @@ class BookingServiceImpTest {
     }
 
     @Test
-    void get() {
+    void getNotFoundBookingTest() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.get(1L, 1L));
     }
 
     @Test
-    void getUserBookings() {
+    void getNotFoundUserTest() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepository.exists(anyLong())).thenReturn(false);
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.get(1L, 1L));
     }
 
     @Test
-    void getOwnerBookings() {
+    void getNotOwnerNotBookerTest() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepository.exists(anyLong())).thenReturn(false);
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.get(1L, 2L));
+    }
+
+    @Test
+    void getTest() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        BookingFullDto testBookingDto = bookingService.get(1L, 1L);
+        assertEquals(testBookingDto.getId(), bookingDto.getId());
+        assertEquals(testBookingDto.getItem().getId(), bookingDto.getItemId());
+    }
+
+    @Test
+    void getUserBookingsNotFoundUserTest() {
+        when(userRepository.exists(anyLong())).thenReturn(false);
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.getUserBookings(1L, "ALL", 0, 1));
+    }
+
+    @Test
+    void getUserBookingsLessZeroParametersTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        Assertions.assertThrows(ValidationException.class, () -> bookingService.getUserBookings(1L, "ALL", -1, -1));
+    }
+
+    @Test
+    void getUserBookingsAllTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.findByBooker_IdOrderByStartDesc(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getUserBookings(1L, "ALL", 1, 1);
+        assertEquals(bookingList.size(), 1);
+    }
+
+    @Test
+    void getUserBookingsCurrentTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.findByBooker_IdOrderByStartDesc(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getUserBookings(1L, "CURRENT", 1, 1);
+        assertEquals(bookingList.size(), 1);
+    }
+
+    @Test
+    void getUserBookingsPastTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.findByBooker_IdOrderByStartDesc(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getUserBookings(1L, "PAST", 1, 1);
+        assertEquals(bookingList.size(), 0);
+    }
+
+    @Test
+    void getOwnerBookingsNotFoundUserTest() {
+        when(userRepository.exists(anyLong())).thenReturn(false);
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.getOwnerBookings(1L, "ALL", 0, 1));
+    }
+
+    @Test
+    void getOwnerBookingsLessZeroParametersTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        Assertions.assertThrows(ValidationException.class, () -> bookingService.getOwnerBookings(1L, "ALL", 0, -1));
+    }
+
+    @Test
+    void getOwnerBookingsAllTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.getOwnerBookings(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getOwnerBookings(1L, "ALL", 1, 1);
+        assertEquals(bookingList.size(), 1);
+    }
+
+    @Test
+    void getOwnerBookingsFutureTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.getOwnerBookings(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getOwnerBookings(1L, "FUTURE", 1, 1);
+        assertEquals(bookingList.size(), 0);
+    }
+
+    @Test
+    void getOwnerBookingsWaitingTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.getOwnerBookings(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        List<BookingFullDto> bookingList = bookingService.getOwnerBookings(1L, "WAITING", 1, 1);
+        assertEquals(bookingList.size(), 1);
+    }
+
+    @Test
+    void getOwnerBookingsRejectedTest() {
+        when(userRepository.exists(anyLong())).thenReturn(true);
+        when(bookingRepository.getOwnerBookings(anyLong(), any(Pageable.class))).thenReturn(List.of(booking));
+        Assertions.assertThrows(ValidationException.class, () -> bookingService.getOwnerBookings(1L, "UNSUPPORTED_STATUS", 1, 1));
     }
 }
