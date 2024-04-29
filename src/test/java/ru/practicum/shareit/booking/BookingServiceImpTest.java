@@ -114,14 +114,14 @@ class BookingServiceImpTest {
     @Test
     void updateNotFoundBookingTest() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> bookingService.update(1L, 1l, true));
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.update(1L, 1L, true));
     }
 
     @Test
     void updateOwnerSameBookerTest() {
         booking.setStatus(Status.APPROVED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        Assertions.assertThrows(ValidationException.class, () -> bookingService.update(1L, 1l, true));
+        Assertions.assertThrows(ValidationException.class, () -> bookingService.update(1L, 1L, true));
     }
 
     @Test
@@ -129,7 +129,7 @@ class BookingServiceImpTest {
         booking.setStatus(Status.APPROVED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         //bookingService.update(1L, 2l, true);
-        Assertions.assertThrows(RuntimeException.class, () -> bookingService.update(1L, 2l, true));
+        Assertions.assertThrows(RuntimeException.class, () -> bookingService.update(1L, 2L, true));
     }
 
     @Test
@@ -138,7 +138,7 @@ class BookingServiceImpTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         booking.getBooker().setId(2L);
-        BookingFullDto testBookingDto = bookingService.update(1L, 2l, true);
+        BookingFullDto testBookingDto = bookingService.update(1L, 2L, true);
         assertEquals(testBookingDto.getStatus(), Status.APPROVED);
     }
 
@@ -149,7 +149,7 @@ class BookingServiceImpTest {
         booking.setStatus(Status.WAITING);
         booking.setBooker(newBooker);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
-        Assertions.assertThrows(NotFoundException.class, () -> bookingService.update(1L, 3l, true));
+        Assertions.assertThrows(NotFoundException.class, () -> bookingService.update(1L, 3L, true));
     }
 
     @Test
