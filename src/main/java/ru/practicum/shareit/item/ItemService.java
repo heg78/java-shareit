@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserDao;
 import ru.practicum.shareit.user.model.User;
 
@@ -25,6 +27,7 @@ public class ItemService {
     private final UserDao userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     public List<ItemDto> getAllItems(Long userId) {
         return itemRepository.getAllItems(userRepository.getUser(userId)).stream()
@@ -51,9 +54,12 @@ public class ItemService {
     @Transactional
     public ItemDto saveItem(Long userId, ItemDto itemDto) {
         User user = userRepository.getUser(userId);
-
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.getReferenceById(itemDto.getRequestId());
+            item.setRequest(itemRequest);
+        }
         return ItemMapper.toItemDto(itemRepository.saveItem(item), List.of());
     }
 

@@ -25,7 +25,6 @@ public class Booking {
     private LocalDateTime start;
     @Column(name = "end_date", nullable = false)
     @NotNull
-//    @javax.validation.constraints.NotNull(message = "!!!")
     private LocalDateTime end;
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
