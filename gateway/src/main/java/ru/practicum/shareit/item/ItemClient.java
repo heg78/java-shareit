@@ -11,9 +11,6 @@ import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.Collections;
-import java.util.Map;
-
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
@@ -48,7 +45,7 @@ public class ItemClient extends BaseClient {
 //        if (text.isBlank()) {
 //            return ResponseEntity.ok(Collections.emptyList());
 //        }
-        return get("/search?text="+text);
+        return get("/search?text=" + text);
     }
 
     public ResponseEntity<Object> saveComment(Long userId, Long itemId, CommentDto commentDto) {

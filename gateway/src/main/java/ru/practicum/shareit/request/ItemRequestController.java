@@ -6,8 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class ItemRequestController {
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") long userId,
-                              @PathVariable Long requestId) {
+                                      @PathVariable Long requestId) {
         return itemRequestClient.get(userId, requestId);
     }
 
@@ -33,8 +31,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getNotUserRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                   @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                   @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                                     @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                     @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return itemRequestClient.getNotUserRequests(userId, from, size);
     }
 

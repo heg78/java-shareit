@@ -32,7 +32,7 @@ public class BookingClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("?state={state}&from={from}&size={size}",userId, parameters);
+        return get("?state={state}&from={from}&size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> getOwnerBookings(long userId, String state, Integer from, Integer size) {
