@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Table(name = "comments", schema = "public")
+@Table(name = "comments")
 @Entity
 @Getter
 @Setter

@@ -45,7 +45,7 @@ class ItemRepositoryTest {
 
     @Test
     void findByOwnerTest() {
-        List<Item> testItemList = itemRepository.findByOwner(user);
+        List<Item> testItemList = itemRepository.findByOwnerOrderById(user);
         assertEquals(testItemList.size(), 1);
         assertEquals(testItemList.get(0).getDescription(), "ItemDescr");
     }

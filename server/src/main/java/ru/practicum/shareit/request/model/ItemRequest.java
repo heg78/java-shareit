@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Table(name = "requests", schema = "public")
+@Table(name = "requests")
 @Entity
 @Getter
 @Setter

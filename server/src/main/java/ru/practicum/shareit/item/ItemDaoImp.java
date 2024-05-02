@@ -17,7 +17,7 @@ public class ItemDaoImp implements ItemDao {
 
     @Override
     public List<Item> getAllItems(User user) {
-        return itemRepository.findByOwner(user);
+        return itemRepository.findByOwnerOrderById(user);
     }
 
     @Override

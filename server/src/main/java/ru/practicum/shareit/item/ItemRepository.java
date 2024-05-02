@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findByOwner(User user);
+    List<Item> findByOwnerOrderById(User user);
 
     @Query(value = " select * from items it where it.available = true and " +
             "(upper(it.name) like upper('%' || ?1 || '%') " +
