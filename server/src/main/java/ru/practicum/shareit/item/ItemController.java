@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
-@Validated
 public class ItemController {
     private final ItemService itemService;
 
@@ -27,7 +25,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto saveNewItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Validated ItemDto itemDto) {
+    public ItemDto saveNewItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto) {
         return itemService.saveItem(userId, itemDto);
     }
 
@@ -42,7 +40,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto saveComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody @Validated CommentDto commentDto) {
+    public CommentDto saveComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable Long itemId, @RequestBody CommentDto commentDto) {
         return itemService.saveComment(userId, itemId, commentDto);
     }
 }
