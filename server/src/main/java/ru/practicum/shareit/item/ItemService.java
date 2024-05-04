@@ -45,9 +45,9 @@ public class ItemService {
     }
 
     public List<Item> searchItem(String text) {
-        if (text.isBlank()) {
-            return new ArrayList<>();
-        }
+//        if (text.isBlank()) {
+//            return new ArrayList<>();
+//        }
         return itemRepository.searchItem(text);
     }
 

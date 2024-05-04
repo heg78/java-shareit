@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -36,6 +38,9 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchItem(@RequestParam String text) {
+        if (text.isBlank()) {
+            return ResponseEntity.ok().body(new ArrayList<>());
+        }
         return itemClient.searchItem(text);
     }
 

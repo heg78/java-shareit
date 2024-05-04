@@ -42,9 +42,6 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> searchItem(String text) {
-//        if (text.isBlank()) {
-//            return ResponseEntity.ok(Collections.emptyList());
-//        }
         return get("/search?text=" + text);
     }
 
